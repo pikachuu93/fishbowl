@@ -22,7 +22,7 @@ class Fish:
                               self.x,
                               self.y,
                               self.z,
-                              self.energy,
+                              0,
                               food.x,
                               food.y,
                               food.z])

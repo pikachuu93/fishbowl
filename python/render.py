@@ -1,11 +1,12 @@
-from PyQt4 import QtOpenGL, QtGui
+from PyQt5 import QtGui
+from PyQt5.QtWidgets import QApplication
 from OpenGL.GL import *
 
 from simulation import Simulation
 
-class Gui(QtOpenGL.QGLWidget):
+class Gui(QtGui.QOpenGLWindow):
     def __init__(self):
-        QtOpenGL.QGLWidget.__init__(self)
+        QtGui.QOpenGLWindow.__init__(self)
 
         self.sim = Simulation()
 
@@ -15,8 +16,9 @@ class Gui(QtOpenGL.QGLWidget):
         self.circle    = []
         self.real      = []
         self.imag      = []
+        self.mouseStart = False
 
-        self.setFixedSize(650, 650)
+        self.resize(650, 650)
         self.show()
 
         self.startTimer(1000 / 15)
@@ -54,7 +56,7 @@ class Gui(QtOpenGL.QGLWidget):
         fish = self.sim.fish
         food = self.sim.food
 
-        glBegin(GL_LINE_STRIP)
+        glBegin(GL_LINE_LOOP)
         glColor3f(0, 0, 0)
 
         glVertex3f(-1, -1, -1)
@@ -63,7 +65,7 @@ class Gui(QtOpenGL.QGLWidget):
         glVertex3f(-1,  1, -1)
         glEnd()
 
-        glBegin(GL_LINE_STRIP)
+        glBegin(GL_LINE_LOOP)
         glVertex3f(-1, -1,  1)
         glVertex3f( 1, -1,  1)
         glVertex3f( 1,  1,  1)
@@ -95,6 +97,9 @@ class Gui(QtOpenGL.QGLWidget):
         self.mouseStart = e.pos()
 
     def mouseMoveEvent(self, e):
+        if not self.mouseStart:
+            return
+
         self.rotationX += (e.x() - self.mouseStart.x()) / 2
         #self.rotationY += (e.y() - self.mouseStart.y()) / 2
         self.mouseStart = e.pos()
@@ -103,13 +108,15 @@ class Gui(QtOpenGL.QGLWidget):
     def mouseReleaseEvent(self, e):
         self.mouseMoveEvent(e)
         self.update()
+        self.mouseStart = False
 
     def timerEvent(self, e):
         self.sim.step()
         self.update()
 
-a = QtGui.QApplication([])
+a = QApplication([])
 
 g = Gui()
 
 a.exec_()
+
