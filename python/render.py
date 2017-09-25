@@ -8,7 +8,7 @@ class Gui(QtGui.QOpenGLWindow):
     def __init__(self):
         QtGui.QOpenGLWindow.__init__(self)
 
-        self.sim = Simulation()
+        self.sim = Simulation("save/0")
 
         self.rotationX = 0
         self.rotationY = 0

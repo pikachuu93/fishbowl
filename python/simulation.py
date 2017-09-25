@@ -1,11 +1,26 @@
 from fish import Fish
 from food import Food
 
+import os, numpy
+
 class Simulation:
-    def __init__(self, render = None):
-        self.fish   = Fish()
+    def __init__(self, load = None):
+        if load:
+            temp = {}
+            for filename in os.listdir(load):
+                order = int(filename.split(".")[0])
+                data  = numpy.load(load + "/" + filename)
+
+                temp[order] = data
+
+            brain = []
+            for i in temp:
+                brain.append(temp[i])
+
+            self.fish   = Fish(brain)
+        else:
+            self.fish   = Fish()
         self.food   = Food(self.fish.x, self.fish.y, self.fish.z)
-        self.render = render
 
         self.numEaten = 0
 
